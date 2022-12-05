@@ -15,15 +15,7 @@ function Blackjack() {
   }
 
   if(deck === null && gameStart === true){
-    let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-    let types = ["C", "D", "H", "S"];
-    setDeck([])
-
-    for (let i = 0; i < types.length; i++) {
-      for (let j = 0; j < values.length; j++) {
-          setDeck(prevDeck => [...prevDeck, values[j] + "-" + types[i]]);
-      }
-    }
+    HandleBuildDeck()
   }
 
   if(aiCount !== null && aiCount !== playerDecks.length){
@@ -31,6 +23,27 @@ function Blackjack() {
     for(let i = 0; i < aiCount; i++){
       setPlayerDeck((prev) => [...prev, {id: i, cards: []}])
     }
+  }
+
+  async function HandleBuildDeck(){
+    let newDeck = await BuildDeck()
+    setDeck(newDeck)
+  }
+
+  function BuildDeck(){
+    return new Promise(async (resolve) => {
+      let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+      let types = ["C", "D", "H", "S"];
+      let newDeck = []
+
+      for (let i = 0; i < types.length; i++) {
+        for (let j = 0; j < values.length; j++) {
+            newDeck = [...newDeck, values[j] + "-" + types[i]];
+        }
+      }
+      console.log(newDeck)
+      resolve(newDeck)
+    })
   }
 
   async function AddAICards(id){
@@ -46,7 +59,7 @@ function Blackjack() {
 
   function AIValueBuilder(id){
     return new Promise(async (resolve) => {
-      let value = await AcquireValue(playerDecks[id])
+      let value = await AcquireValue(playerDecks[id].cards)
       console.log(value)
       let newHand = playerDecks[id].cards
       while(value < 24){
@@ -59,6 +72,10 @@ function Blackjack() {
     })
   }
 
+  function PopNewCard(){
+
+  }
+
   function AcquireValue(array){
     return new Promise((resolve) => {
       let sum = 0
@@ -69,25 +86,6 @@ function Blackjack() {
       }
       resolve(sum)
   })
-  }
-  
-  function AddCard(idVal){
-    console.log("Calling AddCard")
-    return new Promise((resolve) => {
-      // let result = playerDecks.filter(obj => {
-      //   return obj.id === idVal
-      // })
-      // console.info(result)
-      console.log("Starting...")
-      setPlayerDeck(playerDecks.map((deck) => {
-        if(deck.id === idVal) {
-          return {...deck, cards: [...deck.cards, "8-C"]};
-        }
-        return deck;
-      }))
-      console.log("Done")
-      resolve(true);
-    })
   }
 
   if(gameStart === null || difficulty === null || aiCount === null){
@@ -111,7 +109,7 @@ function Blackjack() {
     )
   }
 
-  if(playerDecks[0].hasOwnProperty("cards")){
+  if(playerDecks[0].hasOwnProperty("cards") && deck !== null){
     return (
       <div>
         <Link to="/">
@@ -120,7 +118,25 @@ function Blackjack() {
         <h2>Game Starting</h2>
         <p>{playerDecks.length}</p>
         <button onClick={() => AddAICards(0)}>Hit</button>
-        <div>{playerDecks[0].cards.map((card, index) => <li key={index}>{card}</li>)}</div>
+        <div>
+          {playerDecks.map((deck, index) => { 
+            return(
+              <div>
+              <p key={index}>Deck #{index}</p>
+              
+              {deck.cards.map((card, index) => <li key={index}>{card}</li>)}
+          </div>
+          )}
+          )
+          }
+        </div>
+        <p>Main Deck</p>
+        <div>
+          {deck.map((card) => {
+            <p>{card}</p>
+          })
+          }
+        </div>
       </div>
     )
   }
