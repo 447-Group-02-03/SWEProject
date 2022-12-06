@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
-import { Button, Card} from "react-bootstrap";
+import { Button, Card, Nav} from "react-bootstrap";
 import '../css/Blackjack.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -280,7 +280,14 @@ function Blackjack() {
             >
             <div>
               <Card.Body>
-                <Card.Title as={"h3"}>Difficulty</Card.Title>
+                  <Card.Title as={"h3"}>
+                      <Link to="/">
+                        <Button className="Home-Button-Body">Home</Button>
+                      </Link>
+                      <div>
+                        Difficulty
+                      </div>
+                  </Card.Title>
                 <Button variant={difficulty === "easy" ? "success" : "secondary"} onClick={()=>setDifficulty("easy")}>Easy</Button>{" "}
                 <Button variant={difficulty === "medium" ? "success" : "secondary"} onClick={()=>setDifficulty("medium")}>Medium</Button>{" "}
                 <Button variant={difficulty === "hard" ? "success" : "secondary"} onClick={()=>setDifficulty("hard")}>Hard</Button>{" "}
@@ -305,44 +312,51 @@ function Blackjack() {
       </div>
     )
   }
-
+  //https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg
   if(playerDecks[0].hasOwnProperty("cards") && deck !== null){
     return (
-      <div>
-        <Link to="/">
-          <button>Home</button>
-        </Link>
-        <h2>Round {round}</h2>
-        <div>
-          <p>Your Cards: {yourHandValue}</p>
-          <div>
-            {yourHand.map((card) => {
-              return <p>{card}</p>;
-            })
-            }
-          </div>
-        </div>
-        <button onClick={UpdateHand}>Hit</button>
-        <button onClick={Reset}>Next Round</button>
-        <div>
-          {playerDecks.map((deck, index) => { 
-            return(
+      <div className="Blackjack">
+        <header className="AppBody">
+          <Card className="ImageStyle">
+            <Card.Img src="https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg"/>
+            <Card.ImgOverlay>
+              <Link to="/">
+                <Button>Home</Button>
+              </Link>
+              <h3 className="RoundGameText">Round {round}</h3>
               <div>
-              <p key={index}>Deck #{index}</p>
-              
-              {deck.cards.map((card, index) => <li key={index}>{card}</li>)}
-          </div>
-          )}
-          )
-          }
-        </div>
-        {/* <p>Main Deck {deck.length}</p>
-        <div>
-          {deck.map((card) => {
-            return <p>{card}</p>;
-          })
-          }
-        </div> */}
+                <p>Your Cards: {yourHandValue}</p>
+                  <div>
+                    {yourHand.map((card) => {
+                      return <p>{card}</p>;
+                    })
+                    }
+                  </div>
+              </div>
+              <Button onClick={UpdateHand}>Hit</Button>{" "}
+              <Button onClick={Reset}>Next Round</Button>{" "}
+              <div>
+                {playerDecks.map((deck, index) => { 
+                  return(
+                    <div>
+                    <p key={index}>Deck #{index}</p>
+                    
+                    {deck.cards.map((card, index) => <li key={index}>{card}</li>)}
+                </div>
+                )}
+                )
+                }
+              </div>
+              {/* <p>Main Deck {deck.length}</p>
+              <div>
+                {deck.map((card) => {
+                  return <p>{card}</p>;
+                })
+                }
+              </div> */}
+            </Card.ImgOverlay>
+          </Card>
+        </header>
       </div>
     )
   }
@@ -350,7 +364,7 @@ function Blackjack() {
   return (
       <div>
         <Link to="/">
-          <button>Home</button>
+          <Button>Home</Button>
         </Link>
         <h2>Blackjack</h2>
         <p>{playerDecks.length}</p>

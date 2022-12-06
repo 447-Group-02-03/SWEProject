@@ -1,3 +1,4 @@
+
 .Body {
     background-color: #0b3f06;
     font-family: Arial, Helvetica, sans-serif;
@@ -11,6 +12,42 @@
     color: white;
 }
 
-.selected{
-    color: green;
+.Home-Button-Body {
+    flex:1;
+    flex-direction: row;
+    justify-content:center;
+    text-align: center;
+    display: flex;
+}
+
+.AppBody {
+    background-color: #0b3f06;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    color: white;
+}
+
+.ImageStyle {
+    background-color: #0b3f06;
+    font-family: Arial, Helvetica, sans-serif;
+    display: block;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 100vh;
+    color: white;
+
+}
+
+.RoundGameText {
+    text-align: center;
+    font-size: calc(15px + 2vmin);
+    position: relative;
+    height: auto;
+}
+
+.PlayerCard {
+    opacity: 0;
 }
