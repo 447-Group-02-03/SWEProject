@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import '../css/Blackjack.css'
 
@@ -9,6 +9,104 @@ function Blackjack() {
   const [deck, setDeck] = useState(null)
   const [cards, setCards] = useState(null)
   const [playerDecks, setPlayerDeck] = useState([])
+  const [round, setRound] = useState(0)
+  const [yourHand, setYourHand] = useState([])
+  const [yourHandValue, setYourHandValue] = useState(0)
+
+  useEffect(() => {
+    function AIValueBuilder(id, currentDeck){
+      return new Promise(async (resolve) => {
+        console.log("Calling AIValueBuilder")
+        let value = await AcquireValue(playerDecks[id].cards)
+        let newHand = playerDecks[id].cards
+  
+        while(value < 16){
+          let newCard = await PopNewCard(currentDeck, newHand)
+          newHand = [...newHand, newCard]
+          value = await AcquireValue(newHand)
+          console.log(value)
+        }
+  
+        currentDeck = currentDeck.filter((card) => {
+          return !newHand.includes(card)
+        })
+        console.log(newHand)
+        resolve([newHand, currentDeck])
+      })
+    }
+  
+    function PopNewCard(currentDeck, hand){
+      return new Promise((resolve) => {
+        console.log("Calling PopNewCard")
+        let index = Math.floor(Math.random() * currentDeck.length)
+        let chosenCard = currentDeck[index]
+        while(hand.includes(chosenCard)){
+          index++
+          chosenCard = currentDeck[index]
+          if(index >= currentDeck.length){
+            index = 0
+          }
+        }
+        resolve(chosenCard)
+      })
+    }
+  
+    function AcquireValue(array){
+      return new Promise((resolve) => {
+        console.log("Calling AcquireValue")
+        let sum = 0
+        let aces = array.filter((card) => {
+          if(card[0] === 'A'){
+            return true;
+          }
+          return false;
+        }).length
+  
+        for(let i = 0; i < array.length; i++){
+          let value = array[i][0]
+          if(array[i].length === 4){
+            value = 10
+          }
+          if(isNaN(value)){
+            if(value === "A"){
+              value = 11
+            }
+            else{
+              value = 10
+            }
+          }
+          sum += parseInt(value)
+        }
+        while(aces !== 0 && sum > 21){
+          sum -= 10
+          aces -= 1
+        }
+        
+        resolve(sum)
+    })
+    }
+    
+    async function AddAICards(){
+      console.log("Calling AddAICards")
+      const newPlayerDeck = []
+      let newMainDeck = deck
+      for(let i = 0; i < aiCount; i++){
+        console.log(newMainDeck)
+        let results = await AIValueBuilder(i, newMainDeck)
+        newPlayerDeck[i] = {
+          id: i,
+          cards: results[0]
+        }
+        newMainDeck = results[1]
+      }
+      setPlayerDeck(newPlayerDeck)
+      setDeck(newMainDeck)
+    }
+
+    if(deck !== null && deck.length === 52 && round !== 0){
+      AddAICards()
+    }
+  }, [round, deck, aiCount, playerDecks])
 
   if(cards === null) {
     setCards(importAll(require.context('../cards', false)))
@@ -25,7 +123,12 @@ function Blackjack() {
     }
   }
 
+  if(aiCount === playerDecks.length && gameStart && round === 0){
+    setRound(round+1)
+  }
+
   async function HandleBuildDeck(){
+    console.log("Calling HandleBuildDeck")
     let newDeck = await BuildDeck()
     await ShuffleDeck(newDeck)
     setDeck(newDeck)
@@ -48,6 +151,7 @@ function Blackjack() {
 
   function ShuffleDeck(array){
     return new Promise(async (resolve) => {
+      console.log("Calling ShuffleDeck")
       let currentIndex = array.length,  randomIndex;
 
       while (currentIndex !== 0) {
@@ -61,16 +165,21 @@ function Blackjack() {
     })
   }
 
-  async function Reset(){
-    let results = await ResetDeck()
-    console.log(results[0])
-    console.log(results[1])
-    setDeck(results[0])
-    setPlayerDeck(results[1])
+  function Reset(){
+    return new Promise(async (resolve) => {
+      console.log("Calling Reset")
+      let results = await ResetDeck()
+      console.log(results[0])
+      console.log(results[1])
+      setDeck(results[0])
+      setPlayerDeck(results[1])
+      setRound(round+1)
+    })
   }
 
   function ResetDeck(){
-    return new Promise(async (resolve) => {
+    return new Promise((resolve) => {
+      console.log("Calling ResetDeck")
       let newDeck = deck
       let newPlayerDeck = []
       for(let i = 0; i < playerDecks.length; i++){
@@ -85,47 +194,32 @@ function Blackjack() {
     })
   }
 
-  async function AddAICards(id){
-    console.log("Calling AddAICards")
-    const newPlayerDeck = []
+  async function UpdateHand(){
+    console.log("Calling UpdateHand")
     let newMainDeck = deck
-    for(let i = 0; i < aiCount; i++){
-      console.log(newMainDeck)
-      let results = await AIValueBuilder(i, newMainDeck)
-      newPlayerDeck[i] = {
-        id: i,
-        cards: results[0]
-      }
-      newMainDeck = results[1]
-    }
-    setPlayerDeck(newPlayerDeck)
-    setDeck(newMainDeck)
+    let results = await AddCardToHand(newMainDeck)
+    setYourHand(results[0])
+    setDeck(results[1])
+    let newValue = await AcquirePlayerValue(results[0])
+    setYourHandValue(newValue)
   }
 
-  function AIValueBuilder(id, currentDeck){
+  function AddCardToHand(currentDeck){
     return new Promise(async (resolve) => {
-      console.log("Calling AIValueBuilder")
-      let value = await AcquireValue(playerDecks[id].cards)
-      let newHand = playerDecks[id].cards
-
-      while(value < 16){
-        let newCard = await PopNewCard(currentDeck, newHand)
-        newHand = [...newHand, newCard]
-        value = await AcquireValue(newHand)
-        console.log(value)
-      }
-
+      console.log("Calling AddCardToHand")
+      let newHand = yourHand
+      let newCard = await PopNewPlayerCard(currentDeck, newHand)
+      newHand = [...newHand, newCard]
       currentDeck = currentDeck.filter((card) => {
         return !newHand.includes(card)
       })
-      console.log(newHand)
       resolve([newHand, currentDeck])
     })
   }
 
-  function PopNewCard(currentDeck, hand){
+  function PopNewPlayerCard(currentDeck, hand){
     return new Promise((resolve) => {
-      console.log("Calling PopNewCard")
+      console.log("Calling PopNewPlayerCard")
       let index = Math.floor(Math.random() * currentDeck.length)
       let chosenCard = currentDeck[index]
       while(hand.includes(chosenCard)){
@@ -139,9 +233,9 @@ function Blackjack() {
     })
   }
 
-  function AcquireValue(array){
+  function AcquirePlayerValue(array){
     return new Promise((resolve) => {
-      console.log("Calling AcquireValue")
+      console.log("Calling AcquirePlayerValue")
       let sum = 0
       let aces = array.filter((card) => {
         if(card[0] === 'A'){
@@ -169,7 +263,6 @@ function Blackjack() {
         sum -= 10
         aces -= 1
       }
-      
       resolve(sum)
   })
   }
@@ -201,10 +294,18 @@ function Blackjack() {
         <Link to="/">
           <button>Home</button>
         </Link>
-        <h2>Game Starting</h2>
-        <p>{playerDecks.length}</p>
-        <button onClick={() => AddAICards(0)}>Hit</button>
-        <button onClick={Reset}>Reset Deck</button>
+        <h2>Round {round}</h2>
+        <div>
+          <p>Your Cards: {yourHandValue}</p>
+          <div>
+            {yourHand.map((card) => {
+              return <p>{card}</p>;
+            })
+            }
+          </div>
+        </div>
+        <button onClick={UpdateHand}>Hit</button>
+        <button onClick={Reset}>Next Round</button>
         <div>
           {playerDecks.map((deck, index) => { 
             return(
@@ -217,13 +318,13 @@ function Blackjack() {
           )
           }
         </div>
-        <p>Main Deck {deck.length}</p>
+        {/* <p>Main Deck {deck.length}</p>
         <div>
           {deck.map((card) => {
             return <p>{card}</p>;
           })
           }
-        </div>
+        </div> */}
       </div>
     )
   }
@@ -235,7 +336,6 @@ function Blackjack() {
         </Link>
         <h2>Blackjack</h2>
         <p>{playerDecks.length}</p>
-        <button onClick={() => AddAICards(0)}>Hit</button>
         {/* <p>{AcquireValue(playerDecks[0].cards)}</p>
         {
           playerDecks[0].cards.map((card) =>
