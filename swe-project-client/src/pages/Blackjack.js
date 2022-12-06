@@ -61,10 +61,29 @@ function Blackjack() {
     })
   }
 
-  // function ResetDeck(){
-  //   let newDeck = deck
-  //   for 
-  // }
+  async function Reset(){
+    let results = await ResetDeck()
+    console.log(results[0])
+    console.log(results[1])
+    setDeck(results[0])
+    setPlayerDeck(results[1])
+  }
+
+  function ResetDeck(){
+    return new Promise(async (resolve) => {
+      let newDeck = deck
+      let newPlayerDeck = []
+      for(let i = 0; i < playerDecks.length; i++){
+        for(let j = 0; j < playerDecks[i].cards.length; j++){
+          newDeck = [...newDeck, playerDecks[i].cards[j]]
+        }
+        newPlayerDeck[i] = {id: playerDecks[i].id, cards: []}
+      }
+      console.log(newDeck)
+      console.log(newPlayerDeck)
+      resolve([newDeck, newPlayerDeck])
+    })
+  }
 
   async function AddAICards(id){
     console.log("Calling AddAICards")
@@ -93,6 +112,7 @@ function Blackjack() {
         let newCard = await PopNewCard(currentDeck, newHand)
         newHand = [...newHand, newCard]
         value = await AcquireValue(newHand)
+        console.log(value)
       }
 
       currentDeck = currentDeck.filter((card) => {
@@ -132,6 +152,9 @@ function Blackjack() {
 
       for(let i = 0; i < array.length; i++){
         let value = array[i][0]
+        if(array[i].length === 4){
+          value = 10
+        }
         if(isNaN(value)){
           if(value === "A"){
             value = 11
@@ -181,6 +204,7 @@ function Blackjack() {
         <h2>Game Starting</h2>
         <p>{playerDecks.length}</p>
         <button onClick={() => AddAICards(0)}>Hit</button>
+        <button onClick={Reset}>Reset Deck</button>
         <div>
           {playerDecks.map((deck, index) => { 
             return(
