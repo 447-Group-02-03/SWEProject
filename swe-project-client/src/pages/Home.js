@@ -15,9 +15,11 @@ class Home extends Component {
               <Card.Img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjJSOJive1GZiEC4jiMUMbrDUhsqKlh-6bdw&usqp=CAU" />
               <Card.Text>Select Game</Card.Text>
               <Link to="/blackjack">
-                <Button type="button" class="btn btn-warning">
-                  Blackjack
-                </Button>
+                <Button>Blackjack</Button>
+              </Link>
+              <div />
+              <Link to="/poker">
+                <Button>Poker</Button>
               </Link>
             </Card.Body>
           </Card>
