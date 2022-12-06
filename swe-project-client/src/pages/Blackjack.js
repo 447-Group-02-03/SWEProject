@@ -15,10 +15,11 @@ function Blackjack() {
   const [yourHand, setYourHand] = useState([])
   const [yourHandValue, setYourHandValue] = useState(0)
   const [winMessage, setWinMessage] = useState("")
-  const [yourChips, setYourChips] = useState(500)
+  const [yourChips, setYourChips] = useState(400)
   const [betChips, setBetChips] = useState(100)
-  const [backups, setBackups] = useState(5)
+  const [backups, setBackups] = useState(0)
   const [backupMessage, setBackupMessage] = useState("")
+  const [gameOver, setGameOver] = useState(false)
 
   useEffect(() => {
     function AIValueBuilder(id, currentDeck){
@@ -116,6 +117,29 @@ function Blackjack() {
       AddAICards()
     }
   }, [round, deck, aiCount, playerDecks])
+
+  useEffect(() => {
+    function HandleBackups(){
+      return new Promise((resolve) => {
+        const messages = ["To stay in the game, you didn't go out at all the previous week to save money for the buy-in.",
+                        "To stay in the game, you put all your savings from this pay period into the buy-in.",
+                        "To stay in the game, you took a second mortgage out on your home, and put that into the buy-in.",
+                        "To stay in the game, you sold your vehicle and put the profits into the buy-in.",
+                        "To stay in the game, you have given up everything for the buy-in."
+                        ]
+        if(backups === messages.length){
+          setGameOver(true)
+          resolve()
+        }
+        resolve(messages[backups])
+      })
+    }
+    
+    async function AcknowledgeBackup(){
+      let message = await HandleBackups()
+      setBackupMessage(message)
+    }
+  }, [backups])
 
   if(cards === null) {
     setCards(importAll(require.context('../cards', false)))
@@ -290,7 +314,7 @@ function Blackjack() {
     }
     else{
       if(yourChips === 0){
-        setBackups(backups-1)
+        setBackups(backups+1)
       }
     }
     setWinMessage(result)
@@ -381,6 +405,19 @@ function Blackjack() {
     )
   }
 
+  if(gameOver){
+    return (
+      <div>
+        <h1>Congratulations! You may not have beat the game, but you denied it to have any power of you. Let this success
+            mark another step in you taking back control of your own life!
+        </h1>
+        <Link to="/">
+          <button>Return to the Home Screen</button>
+        </Link>
+      </div>
+    )
+  }
+
   if(playerDecks[0].hasOwnProperty("cards") && deck !== null){
     return (
       <div>
@@ -388,6 +425,7 @@ function Blackjack() {
           <button>Home</button>
         </Link>
         <h2>Round {round}</h2>
+        <h3>{backupMessage !== "" && yourHand.length === 0 ? backupMessage : ""}</h3>
         <p>{winMessage === "" ? "" : winMessage}</p>
         <div>
           <p>Your Chips: {yourChips} + ({betChips})</p>
