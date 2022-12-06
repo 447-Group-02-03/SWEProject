@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
 import '../css/Blackjack.css'
 
@@ -9,10 +9,6 @@ function Blackjack() {
   const [deck, setDeck] = useState(null)
   const [cards, setCards] = useState(null)
   const [playerDecks, setPlayerDeck] = useState([])
-
-  // useEffect(() => {
-  //   console.log("This is the deck: " + deck)
-  // }, [deck])
 
   if(cards === null) {
     setCards(importAll(require.context('../cards', false)))
@@ -31,6 +27,7 @@ function Blackjack() {
 
   async function HandleBuildDeck(){
     let newDeck = await BuildDeck()
+    await ShuffleDeck(newDeck)
     setDeck(newDeck)
   }
 
@@ -49,51 +46,82 @@ function Blackjack() {
     })
   }
 
-  async function AddAICards(id){
-    console.log("Calling AddAICards")
-    let newHand = await AIValueBuilder(id)
-    console.log(newHand)
-    setPlayerDeck(playerDecks.map((deck) => {
-      if(deck.id === id) {
-        return {...deck, cards: newHand};
-      }
-      return deck;
-    }))
-  }
-
-  function AIValueBuilder(id){
+  function ShuffleDeck(array){
     return new Promise(async (resolve) => {
-      let value = await AcquireValue(playerDecks[id].cards)
-      let newHand = playerDecks[id].cards
-      while(value < 24){
-        let newCard = await PopNewCard()
-        newHand = [...newHand, newCard]
-        value = await AcquireValue(newHand)
-        console.log(newHand)
-        console.log(value)
+      let currentIndex = array.length,  randomIndex;
+
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex], array[currentIndex]];
       }
-      let cardsToRemove = new Set(newHand)
-      let newDeck = deck.filter((card) => {
-        return !cardsToRemove.has(card)
-      })
-      setDeck(newDeck)
-      console.log(newHand)
-      console.log(value)
-      console.log(deck)
-      resolve(newHand)
+    setDeck(array);
     })
   }
 
-  function PopNewCard(){
+  // function ResetDeck(){
+  //   let newDeck = deck
+  //   for 
+  // }
+
+  async function AddAICards(id){
+    console.log("Calling AddAICards")
+    const newPlayerDeck = []
+    let newMainDeck = deck
+    for(let i = 0; i < aiCount; i++){
+      console.log(newMainDeck)
+      let results = await AIValueBuilder(i, newMainDeck)
+      newPlayerDeck[i] = {
+        id: i,
+        cards: results[0]
+      }
+      newMainDeck = results[1]
+    }
+    setPlayerDeck(newPlayerDeck)
+    setDeck(newMainDeck)
+  }
+
+  function AIValueBuilder(id, currentDeck){
+    return new Promise(async (resolve) => {
+      console.log("Calling AIValueBuilder")
+      let value = await AcquireValue(playerDecks[id].cards)
+      let newHand = playerDecks[id].cards
+
+      while(value < 16){
+        let newCard = await PopNewCard(currentDeck, newHand)
+        newHand = [...newHand, newCard]
+        value = await AcquireValue(newHand)
+      }
+
+      currentDeck = currentDeck.filter((card) => {
+        return !newHand.includes(card)
+      })
+      console.log(newHand)
+      resolve([newHand, currentDeck])
+    })
+  }
+
+  function PopNewCard(currentDeck, hand){
     return new Promise((resolve) => {
-      let index = Math.floor(Math.random() * deck.length)
-      let chosenCard = deck[index]
+      console.log("Calling PopNewCard")
+      let index = Math.floor(Math.random() * currentDeck.length)
+      let chosenCard = currentDeck[index]
+      while(hand.includes(chosenCard)){
+        index++
+        chosenCard = currentDeck[index]
+        if(index >= currentDeck.length){
+          index = 0
+        }
+      }
       resolve(chosenCard)
     })
   }
 
   function AcquireValue(array){
     return new Promise((resolve) => {
+      console.log("Calling AcquireValue")
       let sum = 0
       let aces = array.filter((card) => {
         if(card[0] === 'A'){
@@ -114,12 +142,11 @@ function Blackjack() {
         }
         sum += parseInt(value)
       }
-
-      while(aces !== 0 || sum > 21){
+      while(aces !== 0 && sum > 21){
         sum -= 10
         aces -= 1
       }
-
+      
       resolve(sum)
   })
   }
