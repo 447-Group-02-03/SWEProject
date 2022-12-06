@@ -12,7 +12,7 @@ class Poker extends Component {
           <Card style={{ color: "#000", marginBottom: 15 }}>
             <Card.Body>
               <Card.Img src="http://media.tumblr.com/27aff89c6a6fdb579806b0b8c12fae8b/tumblr_inline_mmbsakbUCA1qz4rgp.gif" />
-              <Card.Text>Sorry, The Game Under Development!</Card.Text>
+              <Card.Text>Sorry, the game is under development!</Card.Text>
             </Card.Body>
           </Card>
         </header>
