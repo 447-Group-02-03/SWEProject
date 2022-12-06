@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import '../css/Blackjack.css'
 
@@ -9,6 +9,10 @@ function Blackjack() {
   const [deck, setDeck] = useState(null)
   const [cards, setCards] = useState(null)
   const [playerDecks, setPlayerDeck] = useState([])
+
+  // useEffect(() => {
+  //   console.log("This is the deck: " + deck)
+  // }, [deck])
 
   if(cards === null) {
     setCards(importAll(require.context('../cards', false)))
@@ -41,7 +45,6 @@ function Blackjack() {
             newDeck = [...newDeck, values[j] + "-" + types[i]];
         }
       }
-      console.log(newDeck)
       resolve(newDeck)
     })
   }
@@ -49,6 +52,7 @@ function Blackjack() {
   async function AddAICards(id){
     console.log("Calling AddAICards")
     let newHand = await AIValueBuilder(id)
+    console.log(newHand)
     setPlayerDeck(playerDecks.map((deck) => {
       if(deck.id === id) {
         return {...deck, cards: newHand};
@@ -60,30 +64,62 @@ function Blackjack() {
   function AIValueBuilder(id){
     return new Promise(async (resolve) => {
       let value = await AcquireValue(playerDecks[id].cards)
-      console.log(value)
       let newHand = playerDecks[id].cards
       while(value < 24){
-        console.log(newHand)
-        newHand = [...newHand, "8-C"]
+        let newCard = await PopNewCard()
+        newHand = [...newHand, newCard]
         value = await AcquireValue(newHand)
+        console.log(newHand)
         console.log(value)
       }
+      let cardsToRemove = new Set(newHand)
+      let newDeck = deck.filter((card) => {
+        return !cardsToRemove.has(card)
+      })
+      setDeck(newDeck)
+      console.log(newHand)
+      console.log(value)
+      console.log(deck)
       resolve(newHand)
     })
   }
 
   function PopNewCard(){
-
+    return new Promise((resolve) => {
+      let index = Math.floor(Math.random() * deck.length)
+      let chosenCard = deck[index]
+      resolve(chosenCard)
+    })
   }
 
   function AcquireValue(array){
     return new Promise((resolve) => {
       let sum = 0
+      let aces = array.filter((card) => {
+        if(card[0] === 'A'){
+          return true;
+        }
+        return false;
+      }).length
+
       for(let i = 0; i < array.length; i++){
         let value = array[i][0]
-        console.info(playerDecks)
+        if(isNaN(value)){
+          if(value === "A"){
+            value = 11
+          }
+          else{
+            value = 10
+          }
+        }
         sum += parseInt(value)
       }
+
+      while(aces !== 0 || sum > 21){
+        sum -= 10
+        aces -= 1
+      }
+
       resolve(sum)
   })
   }
@@ -130,10 +166,10 @@ function Blackjack() {
           )
           }
         </div>
-        <p>Main Deck</p>
+        <p>Main Deck {deck.length}</p>
         <div>
           {deck.map((card) => {
-            <p>{card}</p>
+            return <p>{card}</p>;
           })
           }
         </div>
