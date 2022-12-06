@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
+import { Button, Card} from "react-bootstrap";
 import '../css/Blackjack.css'
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function Blackjack() {
   const [difficulty, setDifficulty] = useState(null)
@@ -176,21 +178,37 @@ function Blackjack() {
 
   if(gameStart === null || difficulty === null || aiCount === null){
     return (
-      <div>
-        <div>
-          <p>Difficulty</p>
-          <button className={difficulty === 'easy' ? "selected" : ""} onClick={()=>setDifficulty("easy")}>Easy</button>
-          <button className={difficulty === 'medium' ? "selected" : ""} onClick={()=>setDifficulty("medium")}>Medium</button>
-          <button className={difficulty === 'hard' ? "selected" : ""} onClick={()=>setDifficulty("hard")}>Hard</button>
-        </div>
-        <div>
-          <p>Number of AI</p>
-          <button className={aiCount === 1 ? "selected" : ""} onClick={()=>setAICount(1)}>1</button>
-          <button className={aiCount === 2 ? "selected" : ""} onClick={()=>setAICount(2)}>2</button>
-          <button className={aiCount === 3 ? "selected" : ""} onClick={()=>setAICount(3)}>3</button>
-        </div>
-        <button onClick={()=> aiCount !== null && difficulty !== null ? setGameStart(true) : null}>Start Game</button>
-        <p>{playerDecks.length}</p>
+      <div className="Blackjack">
+        <header className="Body">
+          <Card 
+            style={{width: "25rem"}}
+            bg={"light"}
+            text={"light" === "light" ? "dark" : "white"}
+            >
+            <div>
+              <Card.Body>
+                <Card.Title as={"h3"}>Difficulty</Card.Title>
+                <Button variant={difficulty === "easy" ? "success" : "secondary"} onClick={()=>setDifficulty("easy")}>Easy</Button>{" "}
+                <Button variant={difficulty === "medium" ? "success" : "secondary"} onClick={()=>setDifficulty("medium")}>Medium</Button>{" "}
+                <Button variant={difficulty === "hard" ? "success" : "secondary"} onClick={()=>setDifficulty("hard")}>Hard</Button>{" "}
+              </Card.Body>
+            </div>
+            <div>
+              <Card.Body>
+                <Card.Title as={"h3"}>Number of AI</Card.Title>
+                <Button variant={aiCount === 1 ? "success" : "secondary"} onClick={()=>setAICount(1)}>1</Button>{" "}
+                <Button variant={aiCount === 2 ? "success" : "secondary"} onClick={()=>setAICount(2)}>2</Button>{" "}
+                <Button variant={aiCount === 3 ? "success" : "secondary"} onClick={()=>setAICount(3)}>3</Button>{" "}
+              </Card.Body>
+            </div>
+            <div>
+              <Card.Body>
+                <Button variant="primary" onClick={()=> aiCount !== null && difficulty !== null ? setGameStart(true) : null}>Start Game</Button>
+              </Card.Body>
+            </div>
+            <Card.Footer>{playerDecks.length}</Card.Footer>
+          </Card>
+        </header>
       </div>
     )
   }
