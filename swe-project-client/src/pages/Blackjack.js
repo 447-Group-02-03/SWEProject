@@ -14,6 +14,11 @@ function Blackjack() {
   const [round, setRound] = useState(0)
   const [yourHand, setYourHand] = useState([])
   const [yourHandValue, setYourHandValue] = useState(0)
+  const [winMessage, setWinMessage] = useState("")
+  const [yourChips, setYourChips] = useState(500)
+  const [betChips, setBetChips] = useState(100)
+  const [backups, setBackups] = useState(5)
+  const [backupMessage, setBackupMessage] = useState("")
 
   useEffect(() => {
     function AIValueBuilder(id, currentDeck){
@@ -95,9 +100,11 @@ function Blackjack() {
       for(let i = 0; i < aiCount; i++){
         console.log(newMainDeck)
         let results = await AIValueBuilder(i, newMainDeck)
+        let points = await AcquireValue(results[0])
         newPlayerDeck[i] = {
           id: i,
-          cards: results[0]
+          cards: results[0],
+          value: points
         }
         newMainDeck = results[1]
       }
@@ -121,7 +128,7 @@ function Blackjack() {
   if(aiCount !== null && aiCount !== playerDecks.length){
     setPlayerDeck([])
     for(let i = 0; i < aiCount; i++){
-      setPlayerDeck((prev) => [...prev, {id: i, cards: []}])
+      setPlayerDeck((prev) => [...prev, {id: i, cards: [], value: 0}])
     }
   }
 
@@ -141,7 +148,6 @@ function Blackjack() {
       let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
       let types = ["C", "D", "H", "S"];
       let newDeck = []
-
       for (let i = 0; i < types.length; i++) {
         for (let j = 0; j < values.length; j++) {
             newDeck = [...newDeck, values[j] + "-" + types[i]];
@@ -155,13 +161,10 @@ function Blackjack() {
     return new Promise(async (resolve) => {
       console.log("Calling ShuffleDeck")
       let currentIndex = array.length,  randomIndex;
-
       while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-
-        [array[currentIndex], array[randomIndex]] = [
-          array[randomIndex], array[currentIndex]];
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
       }
     setDeck(array);
     })
@@ -176,6 +179,11 @@ function Blackjack() {
       setDeck(results[0])
       setPlayerDeck(results[1])
       setRound(round+1)
+      setYourHand([])
+      setYourHandValue(0)
+      setWinMessage("")
+      setBetChips(yourChips >= 100 ? 100 : yourChips)
+      setYourChips(yourChips >= 100 ? yourChips - 100 : 0)
     })
   }
 
@@ -188,10 +196,13 @@ function Blackjack() {
         for(let j = 0; j < playerDecks[i].cards.length; j++){
           newDeck = [...newDeck, playerDecks[i].cards[j]]
         }
-        newPlayerDeck[i] = {id: playerDecks[i].id, cards: []}
+        newPlayerDeck[i] = {id: playerDecks[i].id, cards: [], value: 0}
+      }
+      for(let i = 0; i < yourHand.length; i++){
+        newDeck = [...newDeck, yourHand[i]]
       }
       console.log(newDeck)
-      console.log(newPlayerDeck)
+      console.log(yourHand)
       resolve([newDeck, newPlayerDeck])
     })
   }
@@ -269,6 +280,70 @@ function Blackjack() {
   })
   }
 
+  async function SetWinner(){
+    let result = await AcquireWinner()
+    if(result === "You Win!"){
+      setYourChips(yourChips + betChips * aiCount)
+    }
+    else if(result === "You Tied!"){
+      setYourChips(yourChips + betChips * aiCount)
+    }
+    else{
+      if(yourChips === 0){
+        setBackups(backups-1)
+      }
+    }
+    setWinMessage(result)
+  }
+
+  function AcquireWinner(){
+    return new Promise((resolve) => {
+      console.info(playerDecks)
+      let result = "You Win!"
+      if(yourHandValue > 21){
+        result = "You Busted!"
+      }
+      for(let i = 0; i < playerDecks.length; i++){
+        if(playerDecks[i].value > yourHandValue && playerDecks[i].value <= 21){
+          resolve("You Lose!")
+        }
+      }
+      for(let i = 0; i < playerDecks.length; i++){
+        if(playerDecks[i].value === yourHandValue){
+          result = "It's a Tie!"
+        }
+      }
+      resolve(result)
+    })
+  }
+  
+  async function ChangeBet(num){
+    let results = await HandleBetChange(num)
+    setBetChips(results[0])
+    setYourChips(results[1])
+  }
+
+  function HandleBetChange(num){
+    return new Promise((resolve) => {
+      let newBetChips = betChips
+      let yourNewChips = yourChips
+      console.log(newBetChips)
+      if(num === 1){
+        if(newBetChips <= yourNewChips){
+          yourNewChips -= newBetChips
+          newBetChips *= 2
+        }
+      }
+      else{
+        if(newBetChips / 2 >= 100){
+          yourNewChips += (newBetChips / 2)
+          newBetChips /= 2
+        }
+      }
+      resolve([newBetChips, yourNewChips])
+    })
+  }
+
   if(gameStart === null || difficulty === null || aiCount === null){
     return (
       <div className="Blackjack">
@@ -313,7 +388,9 @@ function Blackjack() {
           <button>Home</button>
         </Link>
         <h2>Round {round}</h2>
+        <p>{winMessage === "" ? "" : winMessage}</p>
         <div>
+          <p>Your Chips: {yourChips} + ({betChips})</p>
           <p>Your Cards: {yourHandValue}</p>
           <div>
             {yourHand.map((card) => {
@@ -321,9 +398,13 @@ function Blackjack() {
             })
             }
           </div>
+          <p>Your Bet {betChips}</p>
+          <button disabled={yourHand.length > 0} onClick={() => ChangeBet(1)}>Raise Bet</button>
+          <button disabled={yourHand.length > 0} onClick={() => ChangeBet(0)}>Lower Bet</button>
         </div>
-        <button onClick={UpdateHand}>Hit</button>
-        <button onClick={Reset}>Next Round</button>
+        <button disabled={winMessage !== ""} onClick={UpdateHand}>Hit</button>
+        <button disabled={winMessage !== ""} onClick={SetWinner}>Stay</button>
+        <button disabled={winMessage === ""} onClick={Reset}>Next Round</button>
         <div>
           {playerDecks.map((deck, index) => { 
             return(
@@ -336,13 +417,13 @@ function Blackjack() {
           )
           }
         </div>
-        {/* <p>Main Deck {deck.length}</p>
+        <p>Main Deck {deck.length}</p>
         <div>
           {deck.map((card) => {
             return <p>{card}</p>;
           })
           }
-        </div> */}
+        </div>
       </div>
     )
   }
