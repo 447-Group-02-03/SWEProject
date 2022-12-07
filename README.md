@@ -6,7 +6,7 @@
 
 ## License: MIT
 
-**Access the actual product at this [Link](https://oldlemonpepper.github.io/blackjack)**
+**Access the actual product at this [Link](https://oldlemonpepper.github.io)**
 
 Card Stop is a small web-based card game designed to discourage gambling addiction for avid card players. it was designed using HTML, CSS, and Javascript under the React Framework. In addition to this, it  is also dependent on the React-Router and Bootstrap modules for navigation and user interface support. As of Decmber 5th, 2022 the application can be run on the latest versions of Google Chrome, Firefox, Microsoft Edge and Internet Explorer. The application is **not** supported on mobile devices at this time.
 
