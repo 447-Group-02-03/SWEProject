@@ -1,10 +1,10 @@
 # Card Stop Product
 
-##By The Boys
+## By The Boys
 
-##Published on December 6th, 2022
+## Published on December 6th, 2022
 
-##License: MIT
+## License: MIT
 
 **Access the actual product at this [Link]()**
 
