@@ -18,4 +18,4 @@ NOTE: Before doing this, please ensure you have the necessary dependencies by pe
 `npm install react-bootstrap bootstrap`
 
 To rebuild the product after making final changes, perform the following command in the `swe-project-client` folder:
-`npm start build`
+`npm run build`
