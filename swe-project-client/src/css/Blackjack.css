@@ -42,15 +42,24 @@
 }
 
 .CardStyle {
-    height: 150px;
-    width: 100px;
+    height: 130px;
+    width: auto;
+}
+
+.PlayerCardStyle {
+    height: 130px;
+    width: auto;
+    position: relative;
+    top: 60%;
+    left: 40%;
 }
 
 .RoundGameText {
     text-align: center;
     font-size: calc(15px + 2vmin);
-    position: relative;
+    position: absolute;
     height: auto;
+    left: 43%;
 }
 
 .GameOverScreen {

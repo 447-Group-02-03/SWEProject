@@ -609,7 +609,7 @@ function Blackjack() {
             <Card.Img src="https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg"/>
             <Card.ImgOverlay>
               <button onClick={() => setGameWon(true)}>Quit</button>
-              <h2>Round {round}</h2>
+              <h3 className="RoundGameText">Round {round}</h3>
               <h3>{backupMessage !== "" && yourHand.length === 0 ? backupMessage : ""}</h3>
               <p>{winMessage === "" ? "" : winMessage}</p>
               <div>
@@ -617,7 +617,7 @@ function Blackjack() {
                 <p>Your Cards: {yourHandValue}</p>
                 <div>
                   {yourHand.map((card, index) => {
-                    return <img className="CardStyle" key={index} src={cards[card + '.png']} alt={card}></img>;
+                    return <img className="PlayerCardStyle" key={index} src={cards[card + '.png']} alt={card}></img>;
                   })
                   }
                 </div>
