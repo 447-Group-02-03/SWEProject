@@ -24,6 +24,11 @@ function Blackjack() {
 
   useEffect(() => {
     function ValueRemainingCards(cards, goal){
+      // Name: ValueRemainingCards
+      // Description: Promise to return the probability
+      // of picking a card from the deck that will still
+      // result in having a deck under 21 in value
+      // Return: Float Value between 0 and 1
       return new Promise((resolve) => {
         console.log("Calling ValueRemainingCards")
         let cardValues = []
@@ -57,6 +62,12 @@ function Blackjack() {
     }
 
     function AIValueBuilder(id, currentDeck){
+      // Name: AIValueBuilder
+      // Description: Promise to return the newly
+      // created hand as well as the new main deck,
+      // without the cards picked for the hand
+      // Return: Array of size 2, with the new
+      // hand and the new main deck
       return new Promise(async (resolve) => {
         console.log("Calling AIValueBuilder")
         let value = await AcquireValue(playerDecks[id].cards)
@@ -99,6 +110,10 @@ function Blackjack() {
     }
   
     function PopNewCard(currentDeck, hand){
+      // Name: PopNewCard
+      // Description: Pop a single card from the
+      // main deck
+      // Return: String of a single card
       return new Promise((resolve) => {
         console.log("Calling PopNewCard")
         let index = Math.floor(Math.random() * currentDeck.length)
@@ -115,6 +130,10 @@ function Blackjack() {
     }
   
     function AcquireValue(array){
+      // Name: AcquireValue
+      // Description: Determine the current value
+      // of the hand that is passed in
+      // Return: Integer of the deck value
       return new Promise((resolve) => {
         console.log("Calling AcquireValue")
         let sum = 0
@@ -150,6 +169,11 @@ function Blackjack() {
     }
     
     async function AddAICards(){
+      // Name: AddAICards
+      // Description: Update each AI's hand
+      // while reducing cards from the main 
+      // deck
+      // Return: None
       console.log("Calling AddAICards")
       const newPlayerDeck = []
       let newMainDeck = deck
@@ -193,6 +217,9 @@ function Blackjack() {
     async function AcknowledgeBackup(){
       let message = await HandleBackups()
       setBackupMessage(message)
+      if(backups !== 0){
+        setYourChips(1000)
+      }
     }
     AcknowledgeBackup()
   }, [backups])
@@ -217,6 +244,10 @@ function Blackjack() {
   }
 
   async function HandleBuildDeck(){
+    // Name: HandleBuildDeck
+    // Description: Update the deck useState to
+    // contain the entire deck  
+    // Return: None
     console.log("Calling HandleBuildDeck")
     let newDeck = await BuildDeck()
     await ShuffleDeck(newDeck)
@@ -224,6 +255,10 @@ function Blackjack() {
   }
 
   function BuildDeck(){
+    // Name: BuildDeck
+    // Description: Build the deck by concatenating
+    // each value to the actual suit it follows 
+    // Return: Array of size 52, with each card
     return new Promise(async (resolve) => {
       let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
       let types = ["C", "D", "H", "S"];
@@ -238,6 +273,9 @@ function Blackjack() {
   }
 
   function ShuffleDeck(array){
+    // Name: ShuffleDeck
+    // Description: Shuffles the deck array
+    // Return: None
     return new Promise(async (resolve) => {
       console.log("Calling ShuffleDeck")
       let currentIndex = array.length,  randomIndex;
@@ -251,6 +289,10 @@ function Blackjack() {
   }
 
   function Reset(){
+    // Name: Reset
+    // Description: Resets all useStates that change with each
+    // round in the game
+    // Return: None
     return new Promise(async (resolve) => {
       console.log("Calling Reset")
       let results = await ResetDeck()
@@ -266,6 +308,11 @@ function Blackjack() {
   }
 
   function ResetDeck(){
+    // Name: ResetDeck
+    // Description: Resets the main deck to hold all
+    // all cards, while emptying all AI and Player hands
+    // Return: Array of size 2, with the new main deck
+    // and player decks
     return new Promise((resolve) => {
       console.log("Calling ResetDeck")
       let newDeck = deck
@@ -284,6 +331,10 @@ function Blackjack() {
   }
 
   async function UpdateHand(){
+    // Name: UpdateHand
+    // Description: Updates player hand and the main
+    // deck useStates, by calling AddCardToHand
+    // Return: None
     console.log("Calling UpdateHand")
     let newMainDeck = deck
     let results = await AddCardToHand(newMainDeck)
@@ -294,6 +345,12 @@ function Blackjack() {
   }
 
   function AddCardToHand(currentDeck){
+    // Name: AddCardToHand
+    // Description: Adds a single card to the players
+    // hand while removing that same card from the main deck
+    // by calling PopNewPlayerCard
+    // Return: Array of size 2, with the new players hand
+    // and the new main deck
     return new Promise(async (resolve) => {
       console.log("Calling AddCardToHand")
       let newHand = yourHand
@@ -307,6 +364,10 @@ function Blackjack() {
   }
 
   function PopNewPlayerCard(currentDeck, hand){
+    // Name: PopNewPlayerCard
+    // Description: Choose a single card from the main
+    // deck and add it to the players hand
+    // Return: String of a single card
     return new Promise((resolve) => {
       console.log("Calling PopNewPlayerCard")
       let index = Math.floor(Math.random() * currentDeck.length)
@@ -323,6 +384,11 @@ function Blackjack() {
   }
 
   function AcquirePlayerValue(array){
+    // Name: AcquirePlayerValue
+    // Description: Acquire the value of a players hand
+    // (aces are reduced from 11 to 1 if hand goes over
+    // 21)
+    // Return: Integer of the value of the players hand
     return new Promise((resolve) => {
       console.log("Calling AcquirePlayerValue")
       let sum = 0
@@ -357,6 +423,10 @@ function Blackjack() {
   }
 
   async function SetWinner(){
+    // Name: SetWinner
+    // Description: Establish the winner and set
+    // the chips accordingly by calling AcquireWinner()
+    // Return: None
     let result = await AcquireWinner()
     if(result === "You Win!"){
       setYourChips(yourChips + betChips * aiCount)
@@ -373,6 +443,11 @@ function Blackjack() {
   }
 
   function AcquireWinner(){
+    // Name: AcquireWinner
+    // Description: Compare values of each hand
+    // to determine a winner
+    // Return: String declaring the winner of the 
+    //round
     return new Promise((resolve) => {
       let result = "You Win!"
       if(yourHandValue > 21){
@@ -393,12 +468,21 @@ function Blackjack() {
   }
   
   async function ChangeBet(num){
+    // Name: ChangeBet
+    // Description: Update the bet useState
+    // for the player by calling HandleBetChange()
+    // Return: None
     let results = await HandleBetChange(num)
     setBetChips(results[0])
     setYourChips(results[1])
   }
 
   function HandleBetChange(num){
+    // Name: HandleBetChange
+    // Description: Update players bet without
+    // letting them exceed their chips
+    // Return: Array of size 2 with the new betting
+    // chips and your own chips
     return new Promise((resolve) => {
       let newBetChips = betChips
       let yourNewChips = yourChips
