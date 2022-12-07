@@ -552,29 +552,33 @@ function Blackjack() {
     if(yourChips + betChips < 100000){
       return ( 
         <div>
-          <h1>
-            Congratulations! You may not have beat the game, but you denied it to have any power over you. Let this success
-            mark another step in you taking back control of your own life!
-          </h1>
-          <Link to="/">
-            <button>Return to the Home Screen</button>
-          </Link>
+          <Card className="GameOverScreen">
+            <Link to="/">
+              <Button size="lg">Return to the Home Screen</Button>
+            </Link>
+            <Card.Body>
+              Congratulations! You may not have beat the game, but you denied it to have any power over you. Let this success
+              mark another step in you taking back control of your own life!
+            </Card.Body>
+          </Card>
         </div>
       )
     }
     else{
       return (
         <div>
-          <h1>
-            You did it, you have somehow turned 500 chips into 100,000. But take time now to look back at what it cost, how
-            much time was spent during the process? How much was lost for you to reach this point? Finally, was it worth it?
-            Thankfully, aside from the time, very little was lost, but what you have gone through in this small game is 
-            a simple display of an addiction that millions of people go through every day. Hopefully, this experience has 
-            encouraged you to stray away from this addiction. Thank you for playing.
-          </h1>
-          <Link to="/">
-            <button>Return to the Home Screen</button>
-          </Link>
+          <Card className="GameOverScreen">
+            <Link to="/">
+              <Button size="lg">Return to the Home Screen</Button>
+            </Link>
+            <Card.Body>
+              You did it, you have somehow turned 500 chips into 100,000. But take time now to look back at what it cost, how
+              much time was spent during the process? How much was lost for you to reach this point? Finally, was it worth it?
+              Thankfully, aside from the time, very little was lost, but what you have gone through in this small game is 
+              a simple display of an addiction that millions of people go through every day. Hopefully, this experience has 
+              encouraged you to stray away from this addiction. Thank you for playing.
+            </Card.Body>
+          </Card>
         </div>
       )
     }
@@ -583,12 +587,16 @@ function Blackjack() {
   if(gameOver){
     return(
       <div>
-        <p>You have run out of chips, despite the numerous steps taken to continue playing. Consider this however, despite
-        time, you have lost nothing. The same cannot be said for many people who suffer from gambling addictions every
-        year. Hopefully, this experience has encouraged you to stray away from this addiction. Thank you for playing.</p>
-        <Link to="/">
-          <button>Return to the Home Screen</button>
-        </Link>
+        <Card className="GameOverScreen">
+          <Link to="/">
+            <Button size="lg">Return to the Home Screen</Button>
+          </Link>
+          <Card.Body>
+            You have run out of chips, despite the numerous steps taken to continue playing. Consider this however, despite
+            time, you have lost nothing. The same cannot be said for many people who suffer from gambling addictions every
+            year. Hopefully, this experience has encouraged you to stray away from this addiction. Thank you for playing.
+          </Card.Body>
+        </Card>
       </div>
     )
   }
@@ -638,12 +646,12 @@ function Blackjack() {
           }
         </div>
         <p>Main Deck {deck.length}</p>
-        <div>
+        {/* <div>
           {deck.map((card) => {
             return <p>{card}</p>;
           })
           }
-        </div>
+        </div> */}
       </div>
     )
   }
