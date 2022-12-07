@@ -597,7 +597,6 @@ function Blackjack() {
       </div>
     );
   }
-  //https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg
 
   if (gameWon) {
     if (yourChips + betChips < 100000) {
@@ -658,6 +657,7 @@ function Blackjack() {
     );
   }
 
+  //https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg
   if (playerDecks[0].hasOwnProperty("cards") && deck !== null) {
     return (
       <div className="Blackjack">
@@ -666,21 +666,52 @@ function Blackjack() {
             <Card.Img src="https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg" />
             <Card.ImgOverlay>
               <Button onClick={() => setGameWon(true)}>Quit</Button>
-              <h3 className="RoundGameText">Round {round}</h3>
-              <h3>
-                {backupMessage !== "" && yourHand.length === 0
-                  ? backupMessage
-                  : ""}
-              </h3>
-              <p>{winMessage === "" ? "" : winMessage}</p>
-              <div>
-                <p>
-                  Your Chips: {yourChips} +({betChips})
-                </p>
+              <div  className="RoundGameText">
+                <h3>Round {round}</h3>
+                <h3>
+                  {backupMessage !== "" && yourHand.length === 0 ? backupMessage: ""}
+                </h3>
+                <p>{winMessage === "" ? "" : winMessage}</p>
               </div>
-              <div className="CenterBodyTop">
-                <p>Your Cards: {yourHandValue}</p>
 
+              <div className="AICardPos">
+                {playerDecks.map((deck, index) => {
+                  return (
+                    <div>
+                      {index !== 0 ? (
+                        <p key={index}>
+                          Deck #{index} ({winMessage !== "" ? deck.value : "?"})
+                        </p>
+                      ) : (
+                        <p key={index}>
+                          House ({winMessage !== "" ? deck.value : "?"})
+                        </p>
+                      )}
+
+                      {deck.cards.map((card, index) => {
+                        return index === 0 ? (
+                          <img
+                            className="AICardStyle"
+                            key={index}
+                            src={cards["BACK.png"]}
+                            alt={card}
+                          ></img>
+                        ) : (
+                          <img
+                            className="AICardStyle"
+                            key={index}
+                            src={cards[card + ".png"]}
+                            alt={card}
+                          ></img>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+                <p>Main Deck {deck.length}</p>
+              </div>
+
+              <div className="PlayerCardPos">
                 {yourHand.map((card, index) => {
                   return (
                     <img
@@ -692,10 +723,20 @@ function Blackjack() {
                   );
                 })}
               </div>
-              <Card.Text>
+
+              <div className="PlayerInfoPos">
+                <p>
+                  Your Cards: {yourHandValue}
+                </p>
+                <p>
+                  Your Chips: {yourChips} +({betChips})
+                </p>
                 <div className="Score">
                   <p>Your Bet {betChips}</p>
                 </div>
+              </div>
+
+              <Card.Text className="PlayerBtnSetPos">
                 <Button
                   variant="secondary"
                   disabled={yourHand.length > 0}
@@ -712,7 +753,7 @@ function Blackjack() {
                 </Button>{" "}
               </Card.Text>
 
-              <Card.Text>
+              <Card.Text className="PlayerBtnSetPos">
                 <Button
                   variant="secondary"
                   disabled={winMessage !== "" || yourHandValue >= 21}
@@ -735,42 +776,6 @@ function Blackjack() {
                   Next Round
                 </Button>{" "}
               </Card.Text>
-              <div className="CenterBody">
-                {playerDecks.map((deck, index) => {
-                  return (
-                    <div>
-                      {index !== 0 ? (
-                        <p key={index}>
-                          Deck #{index} ({winMessage !== "" ? deck.value : "?"})
-                        </p>
-                      ) : (
-                        <p key={index}>
-                          House ({winMessage !== "" ? deck.value : "?"})
-                        </p>
-                      )}
-
-                      {deck.cards.map((card, index) => {
-                        return index === 0 ? (
-                          <img
-                            className="CardStyle"
-                            key={index}
-                            src={cards["BACK.png"]}
-                            alt={card}
-                          ></img>
-                        ) : (
-                          <img
-                            className="CardStyle"
-                            key={index}
-                            src={cards[card + ".png"]}
-                            alt={card}
-                          ></img>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-                <p>Main Deck {deck.length}</p>
-              </div>
 
               {/* <div>
                 {deck.map((card) => {
