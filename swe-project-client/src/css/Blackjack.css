@@ -1,78 +1,95 @@
-
 .Body {
-    background-color: #0b3f06;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+  background-color: #0b3f06;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
 .Home-Button-Body {
-    flex:1;
-    flex-direction: row;
-    justify-content:center;
-    text-align: center;
-    display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  display: flex;
 }
 
 .AppBody {
-    background-color: #0b3f06;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    min-height: 100vh;
-    color: white;
+  background-color: #0b3f06;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  color: white;
 }
 
 .ImageOverlayStyle {
-    background-color: #0b3f06;
-    font-family: Arial, Helvetica, sans-serif;
-    display: block;
-    justify-content: center;
-    flex-direction: column;
-    height: auto;
-    color: white;
-
+  background-color: #0b3f06;
+  font-family: Arial, Helvetica, sans-serif;
+  display: block;
+  justify-content: center;
+  flex-direction: column;
+  height: auto;
+  color: white;
+}
+.CenterBody {
+  display: block;
+  top: 15%;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  position: absolute;
+  left: 35%;
+  padding-top: 0%;
+}
+.CenterBodyTop {
+  display: block;
+  top: 43%;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(255, 255, 255);
+  position: fixed;
+  left: 39%;
+  padding-top: 10%;
 }
 
 .CardStyle {
-    height: 130px;
-    width: auto;
+  height: 130px;
+  width: auto;
 }
 
 .PlayerCardStyle {
-    height: 130px;
-    width: auto;
-    position: relative;
+  height: 130px;
+  width: auto;
+  position: relative;
 }
 
 .RoundGameText {
-    text-align: center;
-    font-size: calc(15px + 2vmin);
-    position: absolute;
-    height: auto;
-    left: 43%;
+  text-align: center;
+  top: 0%;
+  font-size: calc(15px + 2vmin);
+  position: absolute;
+  height: auto;
+  left: 43%;
 }
 
 .GameOverScreen {
-    background-color: #0b3f06;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    min-height: 100vh;
-    color: white;
-    font-size: calc(18px + 2vmin);
-    text-align: center;
-    padding: 5rem;
-    width: auto;
-    height: auto;
-    min-width: 10rem;
-    min-width: 10rem;
+  background-color: #0b3f06;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  color: white;
+  font-size: calc(18px + 2vmin);
+  text-align: center;
+  padding: 5rem;
+  width: auto;
+  height: auto;
+  min-width: 10rem;
+  min-width: 10rem;
 }
