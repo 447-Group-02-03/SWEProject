@@ -603,55 +603,61 @@ function Blackjack() {
 
   if(playerDecks[0].hasOwnProperty("cards") && deck !== null){
     return (
-      <div>
-        <button onClick={() => setGameWon(true)}>Quit</button>
-        <h2>Round {round}</h2>
-        <h3>{backupMessage !== "" && yourHand.length === 0 ? backupMessage : ""}</h3>
-        <p>{winMessage === "" ? "" : winMessage}</p>
-        <div>
-          <p>Your Chips: {yourChips} +({betChips})</p>
-          <p>Your Cards: {yourHandValue}</p>
-          <div>
-            {yourHand.map((card) => {
-              return <p>{card}</p>;
-            })
-            }
-          </div>
-          <p>Your Bet {betChips}</p>
-          <button disabled={yourHand.length > 0} onClick={() => ChangeBet(1)}>Raise Bet</button>
-          <button disabled={yourHand.length > 0} onClick={() => ChangeBet(0)}>Lower Bet</button>
-        </div>
-        <button disabled={winMessage !== ""} onClick={UpdateHand}>Hit</button>
-        <button disabled={winMessage !== "" || yourHand.length === 0} onClick={SetWinner}>Stay</button>
-        <button disabled={winMessage === ""} onClick={Reset}>Next Round</button>
-        <div>
-          {playerDecks.map((deck, index) => { 
-            return(
+      <div className="Blackjack">
+        <header className="AppBody">
+          <Card className="ImageOverlayStyle">
+            <Card.Img src="https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg"/>
+            <Card.ImgOverlay>
+              <button onClick={() => setGameWon(true)}>Quit</button>
+              <h2>Round {round}</h2>
+              <h3>{backupMessage !== "" && yourHand.length === 0 ? backupMessage : ""}</h3>
+              <p>{winMessage === "" ? "" : winMessage}</p>
               <div>
-              {index !== 0 ?
-              <p key={index}>Deck #{index} ({winMessage !== "" ? deck.value : "?"})</p> :
-              <p key={index}>House ({winMessage !== "" ? deck.value : "?"})</p>
-              }
-              
-              {deck.cards.map((card, index) => {
-                return (
-                  index === 0 ? 
-                  <img key={index} src={cards['BACK.png']}></img> :
-                  <img key={index} src={cards[card + '.png']}></img>
-                )
-              })}
-          </div>
-          )}
-          )
-          }
-        </div>
-        <p>Main Deck {deck.length}</p>
-        {/* <div>
-          {deck.map((card) => {
-            return <p>{card}</p>;
-          })
-          }
-        </div> */}
+                <p>Your Chips: {yourChips} +({betChips})</p>
+                <p>Your Cards: {yourHandValue}</p>
+                <div>
+                  {yourHand.map((card) => {
+                    return <p>{card}</p>;
+                  })
+                  }
+                </div>
+                <p>Your Bet {betChips}</p>
+                <button disabled={yourHand.length > 0} onClick={() => ChangeBet(1)}>Raise Bet</button>
+                <button disabled={yourHand.length > 0} onClick={() => ChangeBet(0)}>Lower Bet</button>
+              </div>
+              <button disabled={winMessage !== ""} onClick={UpdateHand}>Hit</button>
+              <button disabled={winMessage !== "" || yourHand.length === 0} onClick={SetWinner}>Stay</button>
+              <button disabled={winMessage === ""} onClick={Reset}>Next Round</button>
+              <div>
+                {playerDecks.map((deck, index) => { 
+                  return(
+                    <div>
+                    {index !== 0 ?
+                    <p key={index}>Deck #{index} ({winMessage !== "" ? deck.value : "?"})</p> :
+                    <p key={index}>House ({winMessage !== "" ? deck.value : "?"})</p>
+                    }
+                    
+                    {deck.cards.map((card, index) => {
+                      return (
+                        index === 0 ? 
+                        <img className="CardStyle" key={index} src={cards['BACK.png']}></img> :
+                        <img className="CardStyle" key={index} src={cards[card + '.png']}></img>
+                      )
+                    })}
+                  </div>
+                  )
+                })}
+              </div>
+              <p>Main Deck {deck.length}</p>
+              {/* <div>
+                {deck.map((card) => {
+                  return <p>{card}</p>;
+                })
+                }
+              </div> */}
+            </Card.ImgOverlay>
+          </Card>
+        </header>
       </div>
     )
   }

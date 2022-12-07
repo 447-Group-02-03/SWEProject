@@ -30,7 +30,7 @@
     color: white;
 }
 
-.ImageStyle {
+.ImageOverlayStyle {
     background-color: #0b3f06;
     font-family: Arial, Helvetica, sans-serif;
     display: block;
@@ -39,6 +39,11 @@
     height: auto;
     color: white;
 
+}
+
+.CardStyle {
+    height: 150px;
+    width: 100px;
 }
 
 .RoundGameText {
