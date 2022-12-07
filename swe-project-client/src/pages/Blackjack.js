@@ -470,7 +470,7 @@ function Blackjack() {
         <div>
           <Card className="GameOverScreen">
             <Link to="/">
-              <Button>Return to the Home Screen</Button>
+              <Button size="lg">Return to the Home Screen</Button>
             </Link>
             <Card.Body>
               Congratulations! You may not have beat the game, but you denied it to have any power over you. Let this success
@@ -485,7 +485,7 @@ function Blackjack() {
         <div>
           <Card className="GameOverScreen">
             <Link to="/">
-              <button>Return to the Home Screen</button>
+              <Button size="lg">Return to the Home Screen</Button>
             </Link>
             <Card.Body>
               You did it, you have somehow turned 500 chips into 100,000. But take time now to look back at what it cost, how
@@ -503,12 +503,16 @@ function Blackjack() {
   if(gameOver){
     return(
       <div>
-        <p>You have run out of chips, despite the numerous steps taken to continue playing. Consider this however, despite
-        time, you have lost nothing. The same cannot be said for many people who suffer from gambling addictions every
-        year. Hopefully, this experience has encouraged you to stray away from this addiction. Thank you for playing.</p>
-        <Link to="/">
-          <button>Return to the Home Screen</button>
-        </Link>
+        <Card className="GameOverScreen">
+          <Link to="/">
+            <Button size="lg">Return to the Home Screen</Button>
+          </Link>
+          <Card.Body>
+            You have run out of chips, despite the numerous steps taken to continue playing. Consider this however, despite
+            time, you have lost nothing. The same cannot be said for many people who suffer from gambling addictions every
+            year. Hopefully, this experience has encouraged you to stray away from this addiction. Thank you for playing.
+          </Card.Body>
+        </Card>
       </div>
     )
   }
