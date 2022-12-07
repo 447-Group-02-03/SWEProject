@@ -616,8 +616,8 @@ function Blackjack() {
                 <p>Your Chips: {yourChips} +({betChips})</p>
                 <p>Your Cards: {yourHandValue}</p>
                 <div>
-                  {yourHand.map((card) => {
-                    return <p>{card}</p>;
+                  {yourHand.map((card, index) => {
+                    return <img className="CardStyle" key={index} src={cards[card + '.png']} alt={card}></img>;
                   })
                   }
                 </div>
@@ -640,8 +640,8 @@ function Blackjack() {
                     {deck.cards.map((card, index) => {
                       return (
                         index === 0 ? 
-                        <img className="CardStyle" key={index} src={cards['BACK.png']}></img> :
-                        <img className="CardStyle" key={index} src={cards[card + '.png']}></img>
+                        <img className="CardStyle" key={index} src={cards['BACK.png']} alt={card}></img> :
+                        <img className="CardStyle" key={index} src={cards[card + '.png']} alt={card}></img>
                       )
                     })}
                   </div>
