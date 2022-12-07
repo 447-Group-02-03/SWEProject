@@ -608,7 +608,7 @@ function Blackjack() {
           <Card className="ImageOverlayStyle">
             <Card.Img src="https://pl.sterlingcdn.com/wp-content/uploads/sites/3/2018/07/blackjack-classic-background-1024x768.jpg"/>
             <Card.ImgOverlay>
-              <button onClick={() => setGameWon(true)}>Quit</button>
+              <Button onClick={() => setGameWon(true)}>Quit</Button>
               <h3 className="RoundGameText">Round {round}</h3>
               <h3>{backupMessage !== "" && yourHand.length === 0 ? backupMessage : ""}</h3>
               <p>{winMessage === "" ? "" : winMessage}</p>
@@ -621,13 +621,17 @@ function Blackjack() {
                   })
                   }
                 </div>
-                <p>Your Bet {betChips}</p>
-                <button disabled={yourHand.length > 0} onClick={() => ChangeBet(1)}>Raise Bet</button>
-                <button disabled={yourHand.length > 0} onClick={() => ChangeBet(0)}>Lower Bet</button>
+                  <Card.Text>
+                    <p>Your Bet {betChips}</p>
+                    <Button variant="secondary" disabled={yourHand.length > 0} onClick={() => ChangeBet(1)}>Raise Bet</Button>{" "}
+                    <Button variant="secondary" disabled={yourHand.length > 0} onClick={() => ChangeBet(0)}>Lower Bet</Button>{" "}
+                  </Card.Text>
               </div>
-              <button disabled={winMessage !== "" || yourHandValue >= 21} onClick={UpdateHand}>Hit</button>
-              <button disabled={winMessage !== "" || yourHand.length === 0} onClick={SetWinner}>Stay</button>
-              <button disabled={winMessage === ""} onClick={Reset}>Next Round</button>
+                <Card.Text>
+                  <Button variant="secondary" disabled={winMessage !== "" || yourHandValue >= 21} onClick={UpdateHand}>Hit</Button>{" "}
+                  <Button variant="secondary" disabled={winMessage !== "" || yourHand.length === 0} onClick={SetWinner}>Stay</Button>{" "}
+                  <Button variant="secondary" disabled={winMessage === ""} onClick={Reset}>Next Round</Button>{" "}
+                </Card.Text>
               <div>
                 {playerDecks.map((deck, index) => { 
                   return(
