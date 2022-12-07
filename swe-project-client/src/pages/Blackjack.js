@@ -622,7 +622,7 @@ function Blackjack() {
           <button disabled={yourHand.length > 0} onClick={() => ChangeBet(0)}>Lower Bet</button>
         </div>
         <button disabled={winMessage !== ""} onClick={UpdateHand}>Hit</button>
-        <button disabled={winMessage !== "" || yourHand.length === 0} onClick={() => {SetWinner(); setBackupMessage("")}}>Stay</button>
+        <button disabled={winMessage !== "" || yourHand.length === 0} onClick={SetWinner}>Stay</button>
         <button disabled={winMessage === ""} onClick={Reset}>Next Round</button>
         <div>
           {playerDecks.map((deck, index) => { 
