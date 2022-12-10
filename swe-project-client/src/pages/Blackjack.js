@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button, Card, Nav } from "react-bootstrap";
 import "../css/Blackjack.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { db } from '../firebase-config';
+import { collection, doc, query, limit, getDocs, where, setDoc } from "firebase/firestore";
 
 function Blackjack() {
+  const [searchParams] = useSearchParams();
+
   const [difficulty, setDifficulty] = useState(null);
   const [aiCount, setAICount] = useState(null);
   const [gameStart, setGameStart] = useState(null);
@@ -21,6 +25,15 @@ function Blackjack() {
   const [backupMessage, setBackupMessage] = useState("");
   const [gameOver, setGameOver] = useState(false);
   const [gameWon, setGameWon] = useState(false);
+  const [username, setUsername] = useState(null)
+  const [password, setPassword] = useState(null)
+
+  useEffect(() => {
+    setYourChips(searchParams.get("chips") - 100)
+    setBetChips(100)
+    setUsername(searchParams.get("username"))
+    setPassword(searchParams.get("password"))
+  }, [searchParams])
 
   useEffect(() => {
     function ValueRemainingCards(cards, goal) {
@@ -341,7 +354,7 @@ function Blackjack() {
     // all cards, while emptying all AI and Player hands
     // Return: Array of size 2, with the new main deck
     // and player decks
-    return new Promise((resolve) => {
+    return new Promise(async(resolve) => {
       console.log("Calling ResetDeck");
       let newDeck = deck;
       let newPlayerDeck = [];
@@ -354,6 +367,23 @@ function Blackjack() {
       for (let i = 0; i < yourHand.length; i++) {
         newDeck = [...newDeck, yourHand[i]];
       }
+
+      if(username !== null && password !== null){
+        console.log("Updating Database")
+        let profilesRef = collection(db, 'profiles')
+        let snapshot = query(profilesRef, where("username", "==", username), where("password", "==", password), limit(1))
+        let profile = await getDocs(snapshot)
+        profile.forEach((doc) => {
+          profile = doc.id
+        });
+        console.log(profile)
+        await setDoc(doc(db, "profiles", profile), {
+          username: username,
+          password: password,
+          chips: yourChips
+        })
+      }
+
       resolve([newDeck, newPlayerDeck]);
     });
   }
@@ -520,7 +550,7 @@ function Blackjack() {
     // chips and your own chips
     return new Promise((resolve) => {
       console.log("Calling HandleBetChange")
-      console.log(num = "num")
+      console.log("num = " + num)
       let newBetChips = betChips;
       let yourNewChips = yourChips;
       console.log(newBetChips);
